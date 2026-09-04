@@ -1,0 +1,2 @@
+import ResetPasswordForm from "./ResetPasswordForm";
+export default function ResetPasswordPage(){return <main className="min-h-screen bg-slate-950 px-6 py-20 text-white"><div className="mx-auto max-w-md rounded-3xl border border-white/10 bg-white/[0.04] p-8 shadow-2xl"><p className="text-sm font-semibold uppercase tracking-[0.3em] text-blue-400">ARSHI GROUP</p><h1 className="mt-4 text-3xl font-bold">Choose a new password</h1><p className="mt-3 text-slate-400">Use a strong password you haven’t used elsewhere.</p><ResetPasswordForm/></div></main>}
