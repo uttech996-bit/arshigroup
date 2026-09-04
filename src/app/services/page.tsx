@@ -1,31 +1,10 @@
 import Link from "next/link";
+import { ArrowRight, Check, Sparkles } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
 
-const services = [
-  ["Web Development", "Fast, responsive websites and web applications built around your business goals."],
-  ["E-commerce", "Shopify, WooCommerce and custom commerce experiences designed to convert."],
-  ["Performance Marketing", "Data-driven Meta, TikTok, Google, Snapchat and Pinterest campaigns."],
-  ["SEO & Growth", "Technical SEO, content strategy and conversion improvements for sustainable growth."],
-  ["AI & Automation", "Custom workflows and AI-powered systems that reduce repetitive work."],
-  ["Brand & Creative", "Professional visual systems, creative assets and digital brand experiences."],
-];
-
-export default function ServicesPage() {
-  return (
-    <main className="min-h-screen bg-slate-950 px-6 py-16 text-white lg:px-8">
-      <div className="mx-auto max-w-6xl">
-        <Link href="/" className="text-sm font-semibold text-blue-400">← ARSHI GROUP</Link>
-        <p className="mt-20 text-sm font-bold uppercase tracking-[0.25em] text-blue-400">Services</p>
-        <h1 className="mt-4 text-5xl font-black tracking-tight sm:text-6xl">Everything you need to grow online.</h1>
-        <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {services.map(([title, description]) => (
-            <article key={title} className="rounded-3xl border border-white/10 bg-white/[0.04] p-7">
-              <h2 className="text-xl font-bold">{title}</h2>
-              <p className="mt-3 leading-7 text-slate-400">{description}</p>
-            </article>
-          ))}
-        </div>
-        <Link href="/contact" className="mt-12 inline-block rounded-full bg-blue-600 px-7 py-4 font-bold hover:bg-blue-500">Discuss your project</Link>
-      </div>
-    </main>
-  );
+export const metadata = { title: "Services", description: "Explore ARSHI GROUP digital, commerce, marketing, AI and creative services." };
+export default async function ServicesPage() {
+  const supabase = await createClient();
+  const { data: services } = await supabase.from("services").select("id,name,slug,short_description,features").eq("is_active", true).order("sort_order");
+  return <main><section className="section-wrap !pb-10"><div className="mx-auto max-w-4xl text-center"><div className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-2 text-xs font-bold uppercase tracking-[.2em] text-blue-600 dark:text-blue-300"><Sparkles className="size-4" /> Services</div><h1 className="text-4xl font-black tracking-tight sm:text-6xl">Digital systems built for <span className="gradient-text">real growth.</span></h1><p className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground">Strategy, technology, commerce, performance marketing and automation — connected into one execution partner.</p></div></section><section className="mx-auto max-w-7xl px-5 pb-24"><div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">{(services ?? []).map((service) => <Link key={service.id} href={`/services/${service.slug}`} className="group rounded-3xl border border-border bg-card p-6 transition duration-300 hover:-translate-y-1 hover:border-blue-500/40 hover:shadow-xl"><div className="flex items-center justify-between"><span className="grid size-11 place-items-center rounded-2xl bg-accent text-blue-600 dark:text-blue-300"><Sparkles className="size-5" /></span><ArrowRight className="size-5 text-muted-foreground transition group-hover:translate-x-1" /></div><h2 className="mt-6 text-2xl font-black">{service.name}</h2><p className="mt-3 text-sm leading-6 text-muted-foreground">{service.short_description}</p><ul className="mt-5 space-y-2">{(Array.isArray(service.features) ? service.features : []).slice(0,3).map((feature:string)=><li key={feature} className="flex gap-2 text-sm"><Check className="mt-0.5 size-4 text-blue-500" />{feature}</li>)}</ul></Link>)}</div></section></main>;
 }
