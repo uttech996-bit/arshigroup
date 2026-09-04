@@ -1,19 +1,4 @@
+"use client";
+import { FormEvent, useState } from "react";
 import Link from "next/link";
-
-export default function ContactPage() {
-  return (
-    <main className="min-h-screen bg-slate-950 px-6 py-16 text-white lg:px-8">
-      <div className="mx-auto max-w-3xl">
-        <Link href="/" className="text-sm font-semibold text-blue-400">← ARSHI GROUP</Link>
-        <p className="mt-20 text-sm font-bold uppercase tracking-[0.25em] text-blue-400">Contact</p>
-        <h1 className="mt-4 text-5xl font-black tracking-tight sm:text-6xl">Let&apos;s build something that grows.</h1>
-        <p className="mt-6 text-lg leading-8 text-slate-400">Tell us what you want to build, improve or automate. Our project inquiry system will be connected to the ARSHI GROUP CRM.</p>
-        <div className="mt-10 rounded-3xl border border-white/10 bg-white/[0.04] p-8">
-          <p className="text-slate-400">Owner</p>
-          <p className="mt-1 text-xl font-bold">Ali Raza</p>
-          <p className="mt-6 text-slate-400">For project inquiries, use the contact channel configured for your agency.</p>
-        </div>
-      </div>
-    </main>
-  );
-}
+export default function ContactPage(){const[busy,setBusy]=useState(false);const[done,setDone]=useState(false);const[error,setError]=useState("");async function submit(e:FormEvent<HTMLFormElement>){e.preventDefault();setBusy(true);setError("");const form=new FormData(e.currentTarget);const r=await fetch("/api/leads",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(Object.fromEntries(form.entries()))});const j=await r.json();setBusy(false);if(!r.ok){setError(j.error||"Please try again.");return;}setDone(true);e.currentTarget.reset();}return <main className="section-wrap !py-14 sm:!py-20"><div className="mx-auto max-w-5xl"><Link href="/" className="text-sm font-semibold text-blue-600">← ARSHI GROUP</Link><div className="mt-12 grid gap-10 lg:grid-cols-[.9fr_1.1fr]"><div><p className="text-sm font-bold uppercase tracking-[.25em] text-blue-600">Contact</p><h1 className="mt-4 text-4xl font-black tracking-tight sm:text-6xl">Let&apos;s build something that grows.</h1><p className="mt-5 text-lg leading-8 text-muted-foreground">Tell us what you want to build, improve or automate. Your inquiry goes directly into our CRM for follow-up.</p><p className="mt-8 font-bold">Ali Raza · ARSHI GROUP</p></div><form onSubmit={submit} className="space-y-4 rounded-3xl border border-border bg-card p-6 shadow-xl sm:p-8"><input name="name" required maxLength={100} placeholder="Full name" className="w-full rounded-xl border border-border bg-background px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"/><input name="email" type="email" required maxLength={180} placeholder="Email address" className="w-full rounded-xl border border-border bg-background px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"/><input name="phone" maxLength={40} placeholder="Phone (optional)" className="w-full rounded-xl border border-border bg-background px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"/><input name="company_name" maxLength={120} placeholder="Company (optional)" className="w-full rounded-xl border border-border bg-background px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"/><textarea name="message" required maxLength={5000} rows={6} placeholder="Tell us about your project..." className="w-full rounded-xl border border-border bg-background px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"/><input type="hidden" name="source" value="website_contact"/>{error&&<p className="text-sm text-red-500">{error}</p>}{done&&<p className="text-sm font-semibold text-emerald-600">Thanks — your inquiry has been received.</p>}<button disabled={busy} className="w-full rounded-xl bg-blue-600 px-5 py-3 font-bold text-white disabled:opacity-60">{busy?"Sending…":"Send inquiry"}</button></form></div></div></main>}
