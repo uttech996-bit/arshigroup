@@ -1,33 +1,4 @@
 'use client';
-
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Bell, FolderKanban, Headphones, LayoutDashboard, ReceiptText, UserRound } from "lucide-react";
-
-const links = [
-  ["/dashboard", "Overview", LayoutDashboard],
-  ["/dashboard/projects", "Projects", FolderKanban],
-  ["/dashboard/invoices", "Invoices", ReceiptText],
-  ["/dashboard/tickets", "Support", Headphones],
-  ["/dashboard/profile", "Profile", UserRound],
-] as const;
-
-export default function ClientShell({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  return <div className="min-h-screen bg-background text-foreground">
-    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/80 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        <Link href="/dashboard" className="flex items-center gap-3 font-bold tracking-tight"><span className="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-blue-600 to-cyan-400 text-sm text-white shadow-lg shadow-blue-500/20">AG</span><span>ARSHI GROUP <span className="hidden text-muted-foreground sm:inline">· Client Portal</span></span></Link>
-        <div className="flex items-center gap-2"><Link href="/dashboard/notifications" className="rounded-xl p-2 text-muted-foreground hover:bg-accent hover:text-foreground" aria-label="Notifications"><Bell className="size-5" /></Link><Link href="/" className="hidden rounded-xl border border-border px-4 py-2 text-sm font-semibold sm:block">Website</Link><form action="/auth/logout" method="post"><button className="rounded-xl bg-foreground px-4 py-2 text-sm font-semibold text-background">Sign out</button></form></div>
-      </div>
-    </header>
-    <div className="mx-auto flex max-w-7xl">
-      <aside className="sticky top-16 hidden h-[calc(100vh-4rem)] w-64 shrink-0 border-r border-border px-4 py-6 md:block">
-        <p className="px-3 text-[11px] font-bold uppercase tracking-[.22em] text-muted-foreground">Workspace</p>
-        <nav className="mt-4 space-y-1">{links.map(([href,label,Icon]) => <Link key={href} href={href} className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition ${pathname === href ? "bg-blue-600 text-white shadow-lg shadow-blue-500/15" : "text-muted-foreground hover:bg-accent hover:text-foreground"}`}><Icon className="size-4" />{label}</Link>)}</nav>
-      </aside>
-      <main className="min-w-0 flex-1 pb-24">{children}</main>
-    </div>
-    <nav className="fixed inset-x-3 bottom-3 z-40 grid grid-cols-5 rounded-2xl border border-border bg-background/90 p-1 shadow-2xl backdrop-blur-xl md:hidden">{links.map(([href,label,Icon]) => <Link key={href} href={href} className={`grid place-items-center rounded-xl py-2 text-[10px] font-semibold ${pathname === href ? "bg-blue-600 text-white" : "text-muted-foreground"}`}><Icon className="mb-1 size-4" />{label}</Link>)}</nav>
-  </div>;
-}
+import Link from "next/link"; import { usePathname } from "next/navigation"; import { Bell, FolderKanban, Headphones, LayoutDashboard, ReceiptText, UserRound, BriefcaseBusiness, ClipboardList, ShoppingBag, Activity, Settings } from "lucide-react";
+const links=[['/dashboard','Overview',LayoutDashboard],['/dashboard/projects','Projects',FolderKanban],['/dashboard/services','Services',BriefcaseBusiness],['/dashboard/requests','Requests',ClipboardList],['/dashboard/orders','Orders',ShoppingBag],['/dashboard/invoices','Invoices',ReceiptText],['/dashboard/tickets','Support',Headphones],['/dashboard/notifications','Notifications',Bell],['/dashboard/activity','Activity',Activity],['/dashboard/profile','Profile',UserRound],['/dashboard/settings','Settings',Settings]] as const;
+export default function ClientShell({children}:{children:React.ReactNode}){const pathname=usePathname();return <div className="min-h-screen bg-background text-foreground"><header className="sticky top-0 z-40 border-b border-border/70 bg-background/80 backdrop-blur-xl"><div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6"><Link href="/dashboard" className="flex items-center gap-3 font-bold"><span className="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-blue-600 to-cyan-400 text-sm text-white">AG</span>ARSHI GROUP <span className="hidden text-muted-foreground sm:inline">· Client Portal</span></Link><div className="flex items-center gap-2"><Link href="/dashboard/notifications" className="rounded-xl p-2 text-muted-foreground hover:bg-accent"><Bell className="size-5"/></Link><Link href="/" className="hidden rounded-xl border border-border px-4 py-2 text-sm font-semibold sm:block">Website</Link><form action="/auth/logout" method="post"><button className="rounded-xl bg-foreground px-4 py-2 text-sm font-semibold text-background">Sign out</button></form></div></div></header><div className="mx-auto flex max-w-7xl"><aside className="sticky top-16 hidden h-[calc(100vh-4rem)] w-64 shrink-0 border-r border-border px-4 py-6 md:block"><p className="px-3 text-[11px] font-bold uppercase tracking-[.22em] text-muted-foreground">Workspace</p><nav className="mt-4 space-y-1">{links.map(([href,label,Icon])=><Link key={href} href={href} className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold ${pathname===href?'bg-blue-600 text-white':'text-muted-foreground hover:bg-accent hover:text-foreground'}`}><Icon className="size-4"/>{label}</Link>)}</nav></aside><main className="min-w-0 flex-1 pb-24">{children}</main></div><nav className="fixed inset-x-3 bottom-3 z-40 grid grid-cols-5 rounded-2xl border border-border bg-background/90 p-1 shadow-2xl backdrop-blur-xl md:hidden">{links.slice(0,5).map(([href,label,Icon])=><Link key={href} href={href} className={`grid place-items-center rounded-xl py-2 text-[10px] font-semibold ${pathname===href?'bg-blue-600 text-white':'text-muted-foreground'}`}><Icon className="mb-1 size-4"/>{label}</Link>)}</nav></div>}
