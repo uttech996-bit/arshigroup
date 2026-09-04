@@ -1,0 +1,29 @@
+import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+
+const tables: Record<string, string> = { leads: "leads", projects: "projects", invoices: "invoices", tickets: "support_tickets", services: "services", portfolio: "portfolio" };
+const allowed: Record<string, string[]> = {
+  leads: ["name","email","phone","company_name","service_id","message","status","source"],
+  projects: ["client_id","name","slug","description","status","start_date","due_date"],
+  invoices: ["client_id","invoice_number","amount","currency","status","due_date","notes"],
+  tickets: ["client_id","subject","description","status","priority"],
+  services: ["name","slug","short_description","description","is_active"],
+  portfolio: ["title","slug","description","image_url","project_url","service_id","is_featured","is_published"],
+};
+
+export async function POST(request: Request, { params }: { params: Promise<{ resource: string }> }) {
+  const { resource } = await params;
+  const table = tables[resource];
+  if (!table || !allowed[resource]) return NextResponse.json({ error: "Unsupported resource" }, { status: 404 });
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+  if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const body = await request.json();
+  const payload: Record<string, unknown> = {};
+  for (const key of allowed[resource]) if (Object.prototype.hasOwnProperty.call(body, key)) payload[key] = key === "amount" ? Number(body[key]) : body[key];
+  const { data, error } = await supabase.from(table).insert(payload).select("id").single();
+  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+  return NextResponse.json({ ok: true, id: data.id }, { status: 201 });
+}
