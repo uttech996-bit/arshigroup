@@ -1,100 +1,70 @@
 import Link from "next/link";
-import {
-  ArrowRight,
-  Bot,
-  Check,
-  Code2,
-  Megaphone,
-  Menu,
-  Search,
-  ShoppingBag,
-  Sparkles,
-  Target,
-  Zap,
-} from "lucide-react";
+import { ArrowRight, Bot, Check, ChevronDown, Code2, Globe2, Layers3, Megaphone, Search, ShieldCheck, ShoppingBag, Sparkles, Star, Target, Workflow, Zap } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
+import { Badge } from "@/components/ui/badge";
+import { ButtonLink } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 const services = [
-  { title: "Web Development", text: "Fast, conversion-focused websites and web applications.", icon: Code2 },
-  { title: "E-commerce", text: "Shopify, WooCommerce and custom commerce experiences.", icon: ShoppingBag },
-  { title: "Performance Marketing", text: "Data-driven Meta, TikTok, Google and social campaigns.", icon: Megaphone },
-  { title: "SEO & Growth", text: "Technical SEO and content systems built for sustainable growth.", icon: Search },
-  { title: "AI & Automation", text: "Smarter workflows, assistants and business automations.", icon: Bot },
-  { title: "Brand & Creative", text: "Distinct visual systems that make businesses memorable.", icon: Sparkles },
+  ["Web & App Development", "High-performance digital products engineered for speed, conversion and scale.", Code2],
+  ["E-commerce Systems", "Shopify, WooCommerce and custom commerce experiences built around your customer journey.", ShoppingBag],
+  ["Performance Marketing", "Meta, TikTok, Google and social acquisition systems driven by testing and measurable outcomes.", Megaphone],
+  ["SEO & Growth", "Technical SEO, content systems and conversion optimization that compound over time.", Search],
+  ["AI & Automation", "Intelligent workflows, AI assistants and business automations that remove repetitive work.", Bot],
+  ["Brand & Creative", "Distinct identities, campaigns and creative systems designed to earn attention.", Sparkles],
+];
+const process = [["01", "Discover", "Research, positioning and a clear growth roadmap."], ["02", "Design", "UX, visual direction and conversion architecture."], ["03", "Build", "Fast, reliable technology with clean foundations."], ["04", "Scale", "Launch, measure, optimize and keep improving."]];
+const testimonials = [
+  ["Client testimonial placeholder", "Founder / E-commerce Brand", "The ARSHI GROUP team brought strategy and execution together in a way that finally made our digital operation feel coherent."],
+  ["Client testimonial placeholder", "Marketing Director / Growth Company", "Professional communication, sharp creative thinking and a strong focus on business outcomes."],
+  ["Client testimonial placeholder", "Business Owner / Local Brand", "A reliable digital partner from first concept through launch and ongoing optimization."],
+];
+const faqs = [
+  ["What does ARSHI GROUP do?", "We combine digital strategy, web development, e-commerce, paid acquisition, SEO, AI automation and creative services under one team."],
+  ["Can you work with an existing website or store?", "Yes. We can audit, redesign, rebuild, optimize or connect your existing systems without forcing a complete replacement."],
+  ["Do you manage TikTok Ads?", "Yes. We offer TikTok Ads strategy, setup, campaign management, creative direction and performance optimization."],
+  ["How does a project start?", "Start with a project inquiry. We review your goals, current setup and priorities, then recommend the most practical next step."],
 ];
 
-const stats = [
-  ["Digital-first", "Strategy"],
-  ["Conversion", "Focused"],
-  ["Built to", "Scale"],
-  ["Long-term", "Partner"],
-];
+function SectionHeading({ eyebrow, title, text }: { eyebrow: string; title: React.ReactNode; text?: string }) {
+  return <div className="max-w-3xl"><Badge>{eyebrow}</Badge><h2 className="mt-5 text-4xl font-black tracking-[-.035em] text-foreground sm:text-6xl">{title}</h2>{text && <p className="mt-5 text-base leading-8 text-muted-foreground sm:text-lg">{text}</p>}</div>;
+}
 
 export default function HomePage() {
-  return (
-    <main className="min-h-screen overflow-hidden bg-[#050816] text-white">
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#050816]/80 backdrop-blur-xl">
-        <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
-          <Link href="/" className="text-xl font-black tracking-tight sm:text-2xl">ARSHI<span className="text-blue-500">.</span>GROUP</Link>
-          <div className="hidden items-center gap-8 md:flex">
-            <Link href="/services" className="text-sm text-slate-300 transition hover:text-white">Services</Link>
-            <Link href="/portfolio" className="text-sm text-slate-300 transition hover:text-white">Portfolio</Link>
-            <Link href="/about" className="text-sm text-slate-300 transition hover:text-white">About</Link>
-            <Link href="/contact" className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-bold text-slate-950 transition hover:-translate-y-0.5 hover:bg-blue-50">Start a Project <ArrowRight size={16} /></Link>
-          </div>
-          <Link href="/contact" aria-label="Start a project" className="rounded-full border border-white/10 p-3 md:hidden"><Menu size={20} /></Link>
-        </nav>
-      </header>
+  return <main className="min-h-screen overflow-hidden bg-background text-foreground">
+    <header className="sticky top-0 z-50 border-b border-border/70 bg-background/80 backdrop-blur-2xl">
+      <nav className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
+        <Link href="/" className="text-xl font-black tracking-[-.05em] sm:text-2xl">ARSHI<span className="text-blue-500">.</span>GROUP</Link>
+        <div className="hidden items-center gap-7 md:flex"><Link href="#services" className="nav-link">Services</Link><Link href="#work" className="nav-link">Work</Link><Link href="#process" className="nav-link">Process</Link><Link href="#faq" className="nav-link">FAQ</Link><ThemeToggle/><ButtonLink href="/contact" size="sm">Start a Project <ArrowRight size={15}/></ButtonLink></div>
+        <div className="flex items-center gap-2 md:hidden"><ThemeToggle/><details className="relative"><summary className="grid h-10 w-10 cursor-pointer list-none place-items-center rounded-full border border-border text-sm">☰</summary><div className="absolute right-0 top-12 w-52 rounded-2xl border border-border bg-card p-2 shadow-2xl"><Link className="mobile-nav" href="#services">Services</Link><Link className="mobile-nav" href="#work">Work</Link><Link className="mobile-nav" href="#process">Process</Link><Link className="mobile-nav" href="#faq">FAQ</Link><Link className="mobile-nav font-bold text-blue-500" href="/contact">Start a Project →</Link></div></details></div>
+      </nav>
+    </header>
 
-      <section className="relative isolate">
-        <div className="pointer-events-none absolute left-1/2 top-[-180px] -z-10 h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-blue-600/15 blur-[120px]" />
-        <div className="mx-auto grid min-h-[720px] max-w-7xl items-center gap-14 px-5 py-20 sm:px-6 lg:grid-cols-[1.15fr_.85fr] lg:px-8 lg:py-28">
-          <div>
-            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-blue-400/20 bg-blue-500/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-blue-300 sm:text-sm"><span className="h-2 w-2 rounded-full bg-blue-400" /> Digital growth partner</div>
-            <h1 className="max-w-4xl text-5xl font-black leading-[0.98] tracking-[-0.045em] sm:text-6xl lg:text-8xl">We build <span className="bg-gradient-to-r from-blue-400 via-cyan-300 to-white bg-clip-text text-transparent">digital systems</span> that move businesses forward.</h1>
-            <p className="mt-8 max-w-2xl text-base leading-7 text-slate-300 sm:text-xl sm:leading-8">ARSHI GROUP combines development, e-commerce, performance marketing, SEO and AI automation into one focused growth partner.</p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Link href="/contact" className="inline-flex items-center justify-center gap-2 rounded-full bg-blue-600 px-7 py-4 font-bold shadow-2xl shadow-blue-600/20 transition hover:-translate-y-1 hover:bg-blue-500">Start a Project <ArrowRight size={18} /></Link>
-              <Link href="/portfolio" className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-7 py-4 font-bold transition hover:-translate-y-1 hover:bg-white/[0.08]">View Our Work</Link>
-            </div>
-            <div className="mt-12 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4">
-              {stats.map(([top, bottom]) => <div key={top} className="rounded-2xl border border-white/10 bg-white/[0.035] p-4"><p className="text-sm font-bold text-white">{top}</p><p className="mt-1 text-xs text-slate-500">{bottom}</p></div>)}
-            </div>
-          </div>
-          <div className="relative mx-auto w-full max-w-md lg:max-w-none">
-            <div className="absolute -inset-8 rounded-[3rem] bg-blue-600/10 blur-3xl" />
-            <div className="relative overflow-hidden rounded-[2rem] border border-white/15 bg-white/[0.055] p-5 shadow-2xl backdrop-blur-xl sm:p-7">
-              <div className="flex items-center justify-between border-b border-white/10 pb-5"><div><p className="text-xs uppercase tracking-[0.2em] text-blue-300">Growth system</p><p className="mt-1 text-lg font-bold">ARSHI / DIGITAL</p></div><Zap className="text-blue-400" /></div>
-              <div className="mt-6 space-y-3">
-                {["Strategy & positioning", "High-performance build", "Acquisition & growth", "Automation & optimization"].map((item, i) => <div key={item} className="flex items-center gap-4 rounded-2xl border border-white/10 bg-black/20 p-4"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-sm font-bold text-blue-300">0{i + 1}</span><span className="text-sm font-semibold text-slate-200">{item}</span><Check className="ml-auto text-emerald-400" size={18} /></div>)}
-              </div>
-              <div className="mt-5 rounded-2xl bg-gradient-to-br from-blue-600/20 to-cyan-400/5 p-5"><p className="text-xs uppercase tracking-[0.2em] text-blue-300">The goal</p><p className="mt-2 text-2xl font-black">Better digital. Better growth.</p></div>
-            </div>
-          </div>
-        </div>
-      </section>
+    <section className="hero-grid relative isolate">
+      <div className="mx-auto grid min-h-[760px] max-w-7xl items-center gap-14 px-5 py-24 sm:px-6 lg:grid-cols-[1.08fr_.92fr] lg:px-8 lg:py-28">
+        <div className="reveal"><div className="mb-7 inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-2 text-xs font-bold uppercase tracking-[.18em] text-blue-500"><span className="pulse-dot"/> Digital growth partner</div><h1 className="max-w-5xl text-5xl font-black leading-[.94] tracking-[-.06em] sm:text-7xl lg:text-[6.8rem]">Build bold.<br/><span className="gradient-text">Grow faster.</span></h1><p className="mt-8 max-w-2xl text-base leading-8 text-muted-foreground sm:text-xl">ARSHI GROUP creates high-performance websites, commerce systems, acquisition engines and AI-powered workflows for ambitious businesses.</p><div className="mt-9 flex flex-col gap-3 sm:flex-row"><ButtonLink href="/contact" size="lg">Start a Project <ArrowRight size={18}/></ButtonLink><ButtonLink href="#work" variant="secondary" size="lg">Explore our work</ButtonLink></div><div className="mt-12 flex flex-wrap gap-x-7 gap-y-3 text-xs font-semibold uppercase tracking-[.16em] text-muted-foreground"><span className="flex items-center gap-2"><Check size={15} className="text-blue-500"/> Strategy-led</span><span className="flex items-center gap-2"><Check size={15} className="text-blue-500"/> Conversion-focused</span><span className="flex items-center gap-2"><Check size={15} className="text-blue-500"/> Built to scale</span></div></div>
+        <div className="relative reveal reveal-delay"><div className="orb orb-one"/><div className="orb orb-two"/><Card className="relative overflow-hidden p-5 sm:p-7"><div className="flex items-center justify-between border-b border-border pb-5"><div><p className="text-[10px] font-bold uppercase tracking-[.25em] text-blue-500">ARSHI / Growth OS</p><p className="mt-1 text-xl font-black">Digital systems</p></div><div className="grid h-10 w-10 place-items-center rounded-xl bg-blue-500/10 text-blue-500"><Zap size={19}/></div></div><div className="mt-6 space-y-3">{[["Strategy", "Positioning + roadmap"], ["Experience", "UX + high-performance build"], ["Acquisition", "Paid + organic growth"], ["Automation", "AI + connected workflows"]].map(([a,b],i)=><div key={a} className="group flex items-center gap-4 rounded-2xl border border-border bg-background/60 p-4 transition hover:-translate-x-1 hover:border-blue-500/30"><span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-blue-500/10 text-xs font-bold text-blue-500">0{i+1}</span><div><p className="text-sm font-bold">{a}</p><p className="mt-0.5 text-xs text-muted-foreground">{b}</p></div><Check size={17} className="ml-auto text-emerald-500"/></div>)}</div><div className="mt-5 rounded-2xl border border-blue-500/15 bg-gradient-to-br from-blue-600/15 to-cyan-400/5 p-5"><div className="flex items-end justify-between"><div><p className="text-[10px] font-bold uppercase tracking-[.2em] text-blue-500">North star</p><p className="mt-2 text-2xl font-black">Better digital.<br/>Better growth.</p></div><Target className="text-blue-500/70" size={38}/></div></div></Card></div>
+      </div>
+    </section>
 
-      <section className="border-y border-white/10 bg-white/[0.025]">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
-          {services.map(({ title, icon: Icon }) => <div key={title} className="flex items-center gap-3 border-white/10 px-4 py-6 text-xs font-semibold text-slate-300 sm:border-r sm:px-5"><Icon size={18} className="shrink-0 text-blue-400" />{title}</div>)}
-        </div>
-      </section>
+    <section className="border-y border-border bg-card/40"><div className="mx-auto grid max-w-7xl grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">{services.map(([title,,Icon])=><div key={String(title)} className="flex items-center gap-3 border-border px-5 py-5 text-xs font-bold text-muted-foreground sm:border-r"><Icon size={17} className="shrink-0 text-blue-500"/>{title}</div>)}</div></section>
 
-      <section className="mx-auto max-w-7xl px-5 py-24 sm:px-6 lg:px-8 lg:py-32">
-        <div className="max-w-3xl"><p className="text-xs font-bold uppercase tracking-[0.25em] text-blue-400">What we do</p><h2 className="mt-4 text-4xl font-black tracking-tight sm:text-6xl">Everything you need to <span className="text-slate-500">grow online.</span></h2><p className="mt-6 text-lg leading-8 text-slate-400">From your first idea to your next stage of growth, we design the technology and marketing systems around your business.</p></div>
-        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map(({ title, text, icon: Icon }) => <article key={title} className="group rounded-3xl border border-white/10 bg-white/[0.035] p-7 transition duration-300 hover:-translate-y-1 hover:border-blue-400/30 hover:bg-white/[0.055]"><div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/10 text-blue-400"><Icon size={23} /></div><h3 className="mt-6 text-xl font-bold">{title}</h3><p className="mt-3 text-sm leading-7 text-slate-400">{text}</p><Link href="/services" className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-blue-400">Explore <ArrowRight size={15} className="transition group-hover:translate-x-1" /></Link></article>)}
-        </div>
-      </section>
+    <section id="services" className="section-wrap"><SectionHeading eyebrow="Capabilities" title={<>One team. <span className="muted-gradient">Every digital layer.</span></>} text="From strategy to execution, we connect the pieces so your brand, technology and marketing work as one growth system."/><div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{services.map(([title,text,Icon],i)=><Card key={String(title)} className="group p-7 transition duration-500 hover:-translate-y-2 hover:border-blue-500/30"><div className="flex items-start justify-between"><div className="grid h-12 w-12 place-items-center rounded-2xl bg-blue-500/10 text-blue-500"><Icon size={23}/></div><span className="text-xs font-bold text-muted-foreground/60">0{i+1}</span></div><h3 className="mt-7 text-xl font-black">{title}</h3><p className="mt-3 text-sm leading-7 text-muted-foreground">{text}</p><Link href="/services" className="mt-7 inline-flex items-center gap-2 text-sm font-bold text-blue-500">Explore capability <ArrowRight size={15} className="transition group-hover:translate-x-1"/></Link></Card>)}</div></section>
 
-      <section className="mx-auto max-w-7xl px-5 pb-24 sm:px-6 lg:px-8 lg:pb-32">
-        <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br from-blue-600/20 via-white/[0.04] to-transparent p-8 sm:p-12 lg:p-16"><div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end"><div><p className="text-xs font-bold uppercase tracking-[0.25em] text-blue-300">Our approach</p><h2 className="mt-4 max-w-3xl text-4xl font-black tracking-tight sm:text-5xl">Strategy. Build. Launch. Grow.</h2><p className="mt-5 max-w-2xl text-slate-300">A practical, transparent process designed to turn ambitious ideas into measurable digital outcomes.</p></div><Link href="/contact" className="inline-flex w-fit items-center gap-2 rounded-full bg-white px-6 py-3 font-bold text-slate-950 transition hover:bg-blue-50">Let&apos;s work together <ArrowRight size={17} /></Link></div><div className="mt-10 grid gap-3 sm:grid-cols-4">{["Discover", "Design", "Build", "Scale"].map((step, i) => <div key={step} className="rounded-2xl border border-white/10 bg-black/15 p-5"><span className="text-xs font-bold text-blue-300">0{i + 1}</span><p className="mt-3 font-bold">{step}</p></div>)}</div></div>
-      </section>
+    <section className="px-5 pb-24 sm:px-6 lg:px-8"><div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-blue-500/20 bg-[radial-gradient(circle_at_80%_20%,rgba(37,99,235,.28),transparent_35%),linear-gradient(135deg,rgba(37,99,235,.16),transparent)] p-8 sm:p-12 lg:p-16"><div className="grid gap-10 lg:grid-cols-[1fr_.7fr] lg:items-center"><div><Badge>TikTok Ads growth</Badge><h2 className="mt-5 max-w-3xl text-4xl font-black tracking-tight sm:text-6xl">Turn attention into <span className="gradient-text">action.</span></h2><p className="mt-5 max-w-2xl leading-8 text-muted-foreground">Launch and scale TikTok campaigns with a system covering account setup, audience strategy, creative testing, tracking and continuous optimization.</p><div className="mt-7 grid gap-3 sm:grid-cols-2">{["Campaign strategy", "Creative testing", "Pixel & tracking", "Performance optimization"].map(x=><div key={x} className="flex items-center gap-3 text-sm font-semibold"><Check size={17} className="text-blue-500"/>{x}</div>)}</div><ButtonLink href="/contact" className="mt-8">Talk to a TikTok Ads specialist <ArrowRight size={16}/></ButtonLink></div><div className="relative mx-auto w-full max-w-sm"><div className="tiktok-card"><div className="flex items-center gap-3"><div className="grid h-11 w-11 place-items-center rounded-xl bg-white/10"><Megaphone size={20}/></div><div><p className="text-xs text-white/60">Campaign engine</p><p className="font-bold">TikTok Growth</p></div></div><div className="mt-8 space-y-4">{[["Creative", "Testing loop"],["Audience", "Signal driven"],["Budget", "Optimized"],["Reporting", "Clear + actionable"]].map(([a,b])=><div key={a} className="flex justify-between border-b border-white/10 pb-3 text-sm"><span className="text-white/70">{a}</span><span className="font-semibold">{b}</span></div>)}</div><div className="mt-7 flex items-center gap-2 text-xs font-bold uppercase tracking-[.15em] text-cyan-200"><Zap size={14}/> Built for iteration</div></div></div></div></div></section>
 
-      <section className="border-y border-white/10 bg-white/[0.025]">
-        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-5 py-20 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8 lg:py-24"><div><p className="text-xs font-bold uppercase tracking-[0.25em] text-blue-400">Ready when you are</p><h2 className="mt-3 text-3xl font-black sm:text-5xl">Have a project in mind?</h2><p className="mt-3 text-slate-400">Tell us what you&apos;re building. We&apos;ll help you find the right path forward.</p></div><Link href="/contact" className="inline-flex w-fit items-center gap-2 rounded-full bg-blue-600 px-7 py-4 font-bold shadow-xl shadow-blue-600/20 transition hover:bg-blue-500">Start the conversation <ArrowRight size={18} /></Link></div>
-      </section>
+    <section className="section-wrap pt-0"><div className="grid gap-14 lg:grid-cols-[.75fr_1.25fr] lg:items-end"><SectionHeading eyebrow="Why ARSHI" title={<>Not just another <span className="muted-gradient">agency.</span></>} text="We think in systems, not isolated deliverables. Every decision should make the next decision easier, faster and more valuable."/><div className="grid gap-3 sm:grid-cols-2">{[[Globe2,"International mindset","Modern standards with practical execution."],[ShieldCheck,"Built with care","Performance, accessibility and security matter."],[Layers3,"Connected thinking","Design, development and growth stay aligned."],[Workflow,"Transparent process","Clear scope, communication and measurable milestones."]].map(([Icon,title,text])=><Card key={String(title)} className="p-6"><Icon className="text-blue-500" size={22}/><h3 className="mt-5 font-black">{title}</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">{text}</p></Card>)}</div></div></section>
 
-      <footer className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-10 text-sm text-slate-500 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8"><div><span className="font-black text-slate-200">ARSHI<span className="text-blue-500">.</span>GROUP</span><p className="mt-1">Digital solutions built for growth.</p></div><div>© {new Date().getFullYear()} ARSHI GROUP. All rights reserved.</div></footer>
-    </main>
-  );
+    <section id="process" className="section-wrap border-y border-border bg-card/30"><SectionHeading eyebrow="Process" title={<>Simple process. <span className="muted-gradient">Serious execution.</span></>}/><div className="mt-14 grid gap-4 md:grid-cols-4">{process.map(([n,title,text])=><div key={n} className="relative border-l border-border pl-6"><span className="text-xs font-black text-blue-500">{n}</span><h3 className="mt-4 text-xl font-black">{title}</h3><p className="mt-3 text-sm leading-7 text-muted-foreground">{text}</p></div>)}</div></section>
+
+    <section id="work" className="section-wrap"><div className="flex flex-col justify-between gap-7 md:flex-row md:items-end"><SectionHeading eyebrow="Selected work" title={<>Work that makes the <span className="muted-gradient">difference.</span></>}/><ButtonLink href="/portfolio" variant="secondary">View portfolio <ArrowRight size={16}/></ButtonLink></div><div className="mt-14 grid gap-5 lg:grid-cols-2">{[["01","E-commerce Growth System","Shopify / Performance Marketing","A professional case-study placeholder for a future ARSHI GROUP client result."],["02","High-Performance Brand Platform","Web / Brand / SEO","A polished placeholder project demonstrating the type of digital transformation we deliver."],["03","TikTok Acquisition Engine","TikTok Ads / Creative","A future case study slot for campaign strategy, testing and optimization results."],["04","AI Operations System","AI / Automation / Integrations","A future case study slot showing connected workflows and operational efficiency."]].map(([n,title,tag,text])=><Card key={n} className="group overflow-hidden"><div className="case-visual"><div className="grid h-12 w-12 place-items-center rounded-2xl border border-white/15 bg-black/20 text-white"><Sparkles size={20}/></div><span className="ml-auto text-xs font-bold text-white/60">{n}</span></div><div className="p-7"><p className="text-xs font-bold uppercase tracking-[.16em] text-blue-500">{tag}</p><h3 className="mt-3 text-2xl font-black">{title}</h3><p className="mt-3 max-w-xl text-sm leading-7 text-muted-foreground">{text}</p><Link href="/portfolio" className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-blue-500">Case study <ArrowRight size={15} className="transition group-hover:translate-x-1"/></Link></div></Card>)}</div></section>
+
+    <section className="section-wrap border-y border-border bg-card/30"><div className="grid gap-10 lg:grid-cols-[.75fr_1.25fr]"><SectionHeading eyebrow="Client voice" title={<>Built to earn <span className="muted-gradient">trust.</span></>} text="Professional placeholder testimonials are used until verified client reviews are supplied."/><div className="grid gap-4">{testimonials.map(([name,role,text])=><Card key={name} className="p-6"><div className="flex gap-1 text-blue-500">{Array.from({length:5}).map((_,i)=><Star key={i} size={14} fill="currentColor"/>)}</div><p className="mt-5 leading-7 text-foreground/85">“{text}”</p><div className="mt-5"><p className="text-sm font-black">{name}</p><p className="mt-1 text-xs text-muted-foreground">{role}</p></div></Card>)}</div></div></section>
+
+    <section id="faq" className="section-wrap"><div className="grid gap-12 lg:grid-cols-[.7fr_1.3fr]"><SectionHeading eyebrow="FAQ" title={<>Questions, <span className="muted-gradient">answered.</span></>}/><div className="space-y-3">{faqs.map(([q,a])=><details key={q} className="group rounded-2xl border border-border bg-card/70 p-5"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-bold"><span>{q}</span><ChevronDown size={18} className="shrink-0 text-muted-foreground transition group-open:rotate-180"/></summary><p className="max-w-3xl pt-4 text-sm leading-7 text-muted-foreground">{a}</p></details>)}</div></div></section>
+
+    <section className="px-5 pb-24 sm:px-6 lg:px-8"><div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-border bg-card p-8 text-center sm:p-14 lg:p-20"><Badge>Let&apos;s build what&apos;s next</Badge><h2 className="mx-auto mt-5 max-w-4xl text-4xl font-black tracking-[-.04em] sm:text-6xl lg:text-7xl">Your next digital advantage starts <span className="gradient-text">here.</span></h2><p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">Tell us where you are today, where you want to go and what is getting in the way. We&apos;ll help map the smartest path forward.</p><ButtonLink href="/contact" size="lg" className="mt-9">Start the conversation <ArrowRight size={18}/></ButtonLink></div></section>
+
+    <footer className="border-t border-border"><div className="mx-auto grid max-w-7xl gap-10 px-5 py-12 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-8"><div><Link href="/" className="text-xl font-black">ARSHI<span className="text-blue-500">.</span>GROUP</Link><p className="mt-4 max-w-sm text-sm leading-7 text-muted-foreground">Digital strategy, technology, growth and automation for ambitious businesses.</p><p className="mt-5 text-xs text-muted-foreground">Based in Pakistan · Serving clients internationally</p></div><div><p className="footer-title">Explore</p><Link href="/services" className="footer-link">Services</Link><Link href="/portfolio" className="footer-link">Portfolio</Link><Link href="/about" className="footer-link">About</Link><Link href="/contact" className="footer-link">Contact</Link></div><div><p className="footer-title">Client</p><Link href="/auth/login" className="footer-link">Client Login</Link><Link href="/auth/signup" className="footer-link">Create Account</Link><Link href="/dashboard" className="footer-link">Dashboard</Link></div><div><p className="footer-title">Connect</p><Link href="/contact" className="footer-link">Start a project</Link><span className="footer-link">TikTok Ads</span><span className="footer-link">AI & Automation</span></div></div><div className="border-t border-border"><div className="mx-auto flex max-w-7xl flex-col gap-2 px-5 py-6 text-xs text-muted-foreground sm:px-6 md:flex-row md:justify-between lg:px-8"><span>© {new Date().getFullYear()} ARSHI GROUP. All rights reserved.</span><span>Built for performance · Designed for growth</span></div></div></footer>
+  </main>;
 }
