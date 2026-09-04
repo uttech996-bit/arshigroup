@@ -1,0 +1,3 @@
+import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+export async function POST(request:Request){const supabase=await createClient();const {data:{user}}=await supabase.auth.getUser();if(!user)return NextResponse.json({error:"Authentication required"},{status:401});const body=await request.json();const payload={full_name:String(body.full_name||"").slice(0,120)||null,company_name:String(body.company_name||"").slice(0,160)||null,phone:String(body.phone||"").slice(0,40)||null,avatar_url:String(body.avatar_url||"").slice(0,500)||null};const {error}=await supabase.from("profiles").update(payload).eq("id",user.id);if(error)return NextResponse.json({error:error.message},{status:400});return NextResponse.json({ok:true});}
