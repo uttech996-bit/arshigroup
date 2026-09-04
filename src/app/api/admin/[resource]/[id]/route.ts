@@ -1,46 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-
-const tables: Record<string, string> = { leads: "leads", projects: "projects", invoices: "invoices", tickets: "support_tickets", services: "services", portfolio: "portfolio" };
-const allowed: Record<string, string[]> = {
-  leads: ["name","email","phone","company_name","service_id","message","status","source"],
-  projects: ["client_id","name","slug","description","status","start_date","due_date"],
-  invoices: ["client_id","invoice_number","amount","currency","status","due_date","notes"],
-  tickets: ["client_id","subject","description","status","priority"],
-  services: ["name","slug","short_description","description","is_active"],
-  portfolio: ["title","slug","description","image_url","project_url","service_id","is_featured","is_published"],
-};
-
-async function isAdmin() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
-  const { data } = await supabase.from("profiles").select("role").eq("id", user.id).single();
-  return data?.role === "admin" ? supabase : null;
-}
-
-export async function POST(request: Request, { params }: { params: Promise<{ resource: string; id: string }> }) {
-  const { resource, id } = await params;
-  const table = tables[resource];
-  if (!table || !allowed[resource]) return NextResponse.json({ error: "Unsupported resource" }, { status: 404 });
-  const supabase = await isAdmin();
-  if (!supabase) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  const contentType = request.headers.get("content-type") || "";
-  if (contentType.includes("application/x-www-form-urlencoded") || contentType.includes("multipart/form-data")) {
-    const form = await request.formData();
-    if (form.get("_method") === "delete") return deleteRecord(supabase, table, id);
-  }
-  const body = await request.json();
-  const payload: Record<string, unknown> = {};
-  for (const key of allowed[resource]) if (Object.prototype.hasOwnProperty.call(body, key)) payload[key] = key === "amount" ? Number(body[key]) : body[key];
-  const { error } = await supabase.from(table).update(payload).eq("id", id);
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
-  return NextResponse.json({ ok: true });
-}
-
-async function deleteRecord(supabase: Awaited<ReturnType<typeof isAdmin>>, table: string, id: string) {
-  if (!supabase) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  const { error } = await supabase.from(table).delete().eq("id", id);
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
-  return NextResponse.json({ ok: true });
-}
+const tables:Record<string,string>={leads:"leads",projects:"projects",invoices:"invoices",tickets:"support_tickets",services:"services",portfolio:"portfolio"};
+const allowed:Record<string,string[]>= { leads:["name","email","phone","company_name","service_id","message","status","source"],projects:["client_id","name","slug","description","status","start_date","due_date"],invoices:["client_id","invoice_number","amount","currency","status","due_date","notes"],tickets:["client_id","subject","description","status","priority"],services:["name","slug","short_description","description","category_id","icon","hero_title","hero_description","features","pricing","faqs","cta_label","sort_order","is_active"],portfolio:["title","slug","description","image_url","project_url","service_id","is_featured","is_published"]};
+async function isAdmin(){const supabase=await createClient();const {data:{user}}=await supabase.auth.getUser();if(!user)return null;const {data}=await supabase.from("profiles").select("role").eq("id",user.id).single();return data?.role==="admin"?supabase:null;}
+export async function POST(request:Request,{params}:{params:Promise<{resource:string;id:string}>}){const {resource,id}=await params;const table=tables[resource];if(!table||!allowed[resource])return NextResponse.json({error:"Unsupported resource"},{status:404});const supabase=await isAdmin();if(!supabase)return NextResponse.json({error:"Forbidden"},{status:403});const contentType=request.headers.get("content-type")||"";if(contentType.includes("application/x-www-form-urlencoded")||contentType.includes("multipart/form-data")){const form=await request.formData();if(form.get("_method")==="delete")return deleteRecord(supabase,table,id);}const body=await request.json();const payload:Record<string,unknown>={};for(const key of allowed[resource])if(Object.prototype.hasOwnProperty.call(body,key)){let value=body[key];if(key==="amount")value=Number(value);if(["features","pricing","faqs"].includes(key)&&typeof value==="string"){try{value=JSON.parse(value)}catch{return NextResponse.json({error:`${key} must be valid JSON`},{status:400})}}payload[key]=value;}const {error}=await supabase.from(table).update(payload).eq("id",id);if(error)return NextResponse.json({error:error.message},{status:400});return NextResponse.json({ok:true});}
+async function deleteRecord(supabase:Awaited<ReturnType<typeof isAdmin>>,table:string,id:string){if(!supabase)return NextResponse.json({error:"Forbidden"},{status:403});const {error}=await supabase.from(table).delete().eq("id",id);if(error)return NextResponse.json({error:error.message},{status:400});return NextResponse.json({ok:true});}
