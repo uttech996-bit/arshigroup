@@ -1,23 +1,15 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { supabaseKey, supabaseUrl } from "@/lib/supabase/config";
 
-const STAFF_ROLES = new Set([
-  "super_admin",
-  "admin",
-  "manager",
-  "support_agent",
-  "editor",
-]);
+const STAFF_ROLES = new Set(["super_admin", "admin", "manager", "support_agent", "editor"]);
 
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   const pathname = request.nextUrl.pathname;
   const isDashboard = pathname.startsWith("/dashboard");
   const isAdmin = pathname.startsWith("/admin");
 
-  // Fail closed for protected areas when deployment configuration is missing.
   if (!supabaseUrl || !supabaseKey) {
     if (isDashboard || isAdmin) {
       const url = request.nextUrl.clone();
@@ -37,14 +29,11 @@ export async function proxy(request: NextRequest) {
       setAll(cookiesToSet) {
         cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
         response = NextResponse.next({ request });
-        cookiesToSet.forEach(({ name, value, options }) =>
-          response.cookies.set(name, value, options),
-        );
+        cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
       },
     },
   });
 
-  // Supabase recommends getClaims() for server-side identity verification.
   const { data: claimsData } = await supabase.auth.getClaims();
   const claims = claimsData?.claims;
   const userId = typeof claims?.sub === "string" ? claims.sub : null;
@@ -62,25 +51,13 @@ export async function proxy(request: NextRequest) {
   }
 
   if (isAdmin && userId) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", userId)
-      .maybeSingle();
-
+    const { data: profile } = await supabase.from("profiles").select("role").eq("id", userId).maybeSingle();
     const role = typeof profile?.role === "string" ? profile.role : null;
-    if (!role || !STAFF_ROLES.has(role)) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
-    }
+    if (!role || !STAFF_ROLES.has(role)) return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  if (pathname === "/auth/login" && userId) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
-
+  if (pathname === "/auth/login" && userId) return NextResponse.redirect(new URL("/dashboard", request.url));
   return response;
 }
 
-export const config = {
-  matcher: ["/dashboard/:path*", "/admin/:path*", "/auth/login"],
-};
+export const config = { matcher: ["/dashboard/:path*", "/admin/:path*", "/auth/login"] };
