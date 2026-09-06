@@ -17,15 +17,35 @@ export default function SignupForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setError(""); setMessage("");
-    if (password.length < 8) { setError("Use at least 8 characters for your password."); return; }
+    setError("");
+    setMessage("");
+    if (password.length < 8) {
+      setError("Use at least 8 characters for your password.");
+      return;
+    }
     setLoading(true);
-    const supabase = createClient();
-    const { data, error: signUpError } = await supabase.auth.signUp({ email: email.trim().toLowerCase(), password, options: { data: { full_name: name.trim() } } });
-    if (signUpError) { setError(signUpError.message); setLoading(false); return; }
-    if (data.session) { window.location.assign("/dashboard"); return; }
-    setMessage("Account created. Check your email to confirm your account, then sign in.");
-    setLoading(false);
+    try {
+      const supabase = createClient();
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email: email.trim().toLowerCase(),
+        password,
+        options: { data: { full_name: name.trim() } },
+      });
+      if (signUpError) {
+        setError(signUpError.message);
+        return;
+      }
+      if (data.session) {
+        window.location.assign("/dashboard");
+        return;
+      }
+      setMessage("Account created. Check your email to confirm your account, then sign in.");
+    } catch (caught) {
+      const text = caught instanceof Error ? caught.message : "Unable to connect to the authentication service.";
+      setError(text.includes("not configured") || text.includes("API key") ? "Authentication is temporarily unavailable. Please try again shortly." : text);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
