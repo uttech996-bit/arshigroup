@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import "./globals.css";
+import "./premium.css";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { isLocale, localeDirections, type Locale } from "@/lib/i18n/config";
 
