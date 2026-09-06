@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
 };
 
-const themeScript = `(() => { try { const saved = localStorage.getItem('arshi-theme'); document.documentElement.classList.toggle('dark', saved ? saved === 'dark' : true); } catch {} })()`;
+const themeScript = `(() => { try { const key = 'arshi-theme-v2'; const saved = localStorage.getItem(key); document.documentElement.classList.toggle('dark', saved ? saved === 'dark' : true); } catch {} })()`;
 const organizationSchema = { "@context": "https://schema.org", "@type": "Organization", name: "ARSHI GROUP", url: "https://arshigroup.com", description: "Digital growth agency providing web development, e-commerce, marketing, SEO and AI automation services.", areaServed: "Worldwide" };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
