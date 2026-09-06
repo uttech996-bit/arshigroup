@@ -31,15 +31,14 @@ export async function proxy(request: NextRequest) {
 
   const supabase = createServerClient(supabaseUrl, supabaseKey, {
     cookies: {
-      getAll: () => request.cookies.getAll(),
-      setAll(cookiesToSet, headers) {
+      getAll() {
+        return request.cookies.getAll();
+      },
+      setAll(cookiesToSet) {
         cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
         response = NextResponse.next({ request });
         cookiesToSet.forEach(({ name, value, options }) =>
           response.cookies.set(name, value, options),
-        );
-        Object.entries(headers ?? {}).forEach(([key, value]) =>
-          response.headers.set(key, value),
         );
       },
     },
@@ -69,7 +68,8 @@ export async function proxy(request: NextRequest) {
       .eq("id", userId)
       .maybeSingle();
 
-    if (!profile?.role || !STAFF_ROLES.has(profile.role)) {
+    const role = typeof profile?.role === "string" ? profile.role : null;
+    if (!role || !STAFF_ROLES.has(role)) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
   }
