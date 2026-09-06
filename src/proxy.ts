@@ -17,8 +17,7 @@ export async function proxy(request: NextRequest) {
   const isDashboard = pathname.startsWith("/dashboard");
   const isAdmin = pathname.startsWith("/admin");
 
-  // Never turn a missing deployment configuration into a blank/500 response.
-  // Protected areas fail closed and send the visitor to the login screen.
+  // Fail closed for protected areas when deployment configuration is missing.
   if (!supabaseUrl || !supabaseKey) {
     if (isDashboard || isAdmin) {
       const url = request.nextUrl.clone();
@@ -33,36 +32,41 @@ export async function proxy(request: NextRequest) {
   const supabase = createServerClient(supabaseUrl, supabaseKey, {
     cookies: {
       getAll: () => request.cookies.getAll(),
-      setAll(cookiesToSet) {
+      setAll(cookiesToSet, headers) {
         cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
         response = NextResponse.next({ request });
         cookiesToSet.forEach(({ name, value, options }) =>
           response.cookies.set(name, value, options),
         );
+        Object.entries(headers ?? {}).forEach(([key, value]) =>
+          response.headers.set(key, value),
+        );
       },
     },
   });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Supabase recommends getClaims() for server-side identity verification.
+  const { data: claimsData } = await supabase.auth.getClaims();
+  const claims = claimsData?.claims;
+  const userId = typeof claims?.sub === "string" ? claims.sub : null;
+  const emailConfirmed = Boolean(claims?.email_confirmed_at);
 
-  if ((isDashboard || isAdmin) && !user) {
+  if ((isDashboard || isAdmin) && !userId) {
     const url = request.nextUrl.clone();
     url.pathname = "/auth/login";
     url.searchParams.set("next", pathname);
     return NextResponse.redirect(url);
   }
 
-  if ((isDashboard || isAdmin) && user && !user.email_confirmed_at) {
+  if ((isDashboard || isAdmin) && userId && !emailConfirmed) {
     return NextResponse.redirect(new URL("/auth/verify", request.url));
   }
 
-  if (isAdmin && user) {
+  if (isAdmin && userId) {
     const { data: profile } = await supabase
       .from("profiles")
       .select("role")
-      .eq("id", user.id)
+      .eq("id", userId)
       .maybeSingle();
 
     if (!profile?.role || !STAFF_ROLES.has(profile.role)) {
@@ -70,7 +74,7 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  if (pathname === "/auth/login" && user) {
+  if (pathname === "/auth/login" && userId) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
