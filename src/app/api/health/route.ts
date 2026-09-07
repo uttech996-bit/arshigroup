@@ -1,19 +1,28 @@
-import { createClient } from "@/lib/supabase/server";
+import { supabaseKey, supabaseUrl } from "@/lib/supabase/config";
+
+export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const started = Date.now();
+  if (!supabaseUrl || !supabaseKey) {
+    return Response.json({ ok: false, service: "ARSHI GROUP", supabase: { configured: false } }, { status: 503, headers: { "Cache-Control": "no-store" } });
+  }
   try {
-    const supabase = await createClient();
-    const { error } = await supabase.from("services").select("id").eq("is_active", true).limit(1);
-    if (error) throw error;
-    return Response.json(
-      { status: "ok", service: "ARSHI GROUP", database: "ok", latency_ms: Date.now() - started, timestamp: new Date().toISOString() },
-      { headers: { "Cache-Control": "no-store" } },
-    );
+    const response = await fetch(`${supabaseUrl}/auth/v1/settings`, {
+      headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` },
+      cache: "no-store",
+    });
+    return Response.json({
+      ok: response.ok,
+      service: "ARSHI GROUP",
+      supabase: {
+        configured: true,
+        reachable: true,
+        authenticated: response.ok,
+        keyType: supabaseKey.startsWith("sb_publishable_") ? "publishable" : supabaseKey.startsWith("eyJ") ? "legacy-jwt" : "unknown",
+        status: response.status,
+      },
+    }, { status: response.ok ? 200 : 503, headers: { "Cache-Control": "no-store" } });
   } catch {
-    return Response.json(
-      { status: "degraded", service: "ARSHI GROUP", database: "unavailable", timestamp: new Date().toISOString() },
-      { status: 503, headers: { "Cache-Control": "no-store" } },
-    );
+    return Response.json({ ok: false, service: "ARSHI GROUP", supabase: { configured: true, reachable: false } }, { status: 503, headers: { "Cache-Control": "no-store" } });
   }
 }
