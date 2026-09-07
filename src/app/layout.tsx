@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import "./globals.css";
 import "./premium.css";
+import "./brand.css";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { isLocale, localeDirections, type Locale } from "@/lib/i18n/config";
 
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/", languages: { en: "/?lang=en", ur: "/?lang=ur", "x-default": "/" } },
   openGraph: { title: "ARSHI GROUP | Digital Growth Agency", description: "Digital solutions built for growth.", type: "website", siteName: "ARSHI GROUP", url: "https://arshigroup.com/", locale: "en_US" },
   twitter: { card: "summary_large_image", title: "ARSHI GROUP | Digital Growth Agency", description: "Digital solutions built for growth." },
+  icons: { icon: "/brand/arshi-icon.svg", apple: "/brand/arshi-icon.svg" },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
 };
 
