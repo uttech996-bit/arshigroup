@@ -3,10 +3,10 @@ const legacyAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 export const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 
-// Prefer a known-good legacy anon key when it is still configured. This keeps
-// existing Vercel deployments working while the project migrates to the new
-// publishable-key format. The modern key is used when no legacy key exists.
-export const supabaseKey = legacyAnonKey || publishableKey;
+// Prefer the current Supabase publishable key. A stale legacy anon key must
+// never override a valid publishable key in Vercel. Legacy anon is only the
+// fallback for older deployments that have not migrated yet.
+export const supabaseKey = publishableKey || legacyAnonKey;
 
 export function hasSupabaseConfig() {
   return Boolean(supabaseUrl && supabaseKey);
