@@ -5,6 +5,20 @@ import Link from "next/link";
 import { Eye, EyeOff, ShieldCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
+function friendlyAuthError(message: string) {
+  const normalized = message.toLowerCase();
+  if (
+    normalized.includes("api key") ||
+    normalized.includes("invalid api") ||
+    normalized.includes("supabase is not configured") ||
+    normalized.includes("failed to fetch") ||
+    normalized.includes("network")
+  ) {
+    return "Authentication is temporarily unavailable. Please try again shortly.";
+  }
+  return message;
+}
+
 export default function SignupForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -13,7 +27,10 @@ export default function SignupForm() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const strength = useMemo(() => [password.length >= 8, /[A-Z]/.test(password), /[0-9]/.test(password), /[^A-Za-z0-9]/.test(password)].filter(Boolean).length, [password]);
+  const strength = useMemo(
+    () => [password.length >= 8, /[A-Z]/.test(password), /[0-9]/.test(password), /[^A-Za-z0-9]/.test(password)].filter(Boolean).length,
+    [password],
+  );
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -32,7 +49,7 @@ export default function SignupForm() {
         options: { data: { full_name: name.trim() } },
       });
       if (signUpError) {
-        setError(signUpError.message);
+        setError(friendlyAuthError(signUpError.message));
         return;
       }
       if (data.session) {
@@ -42,7 +59,7 @@ export default function SignupForm() {
       setMessage("Account created. Check your email to confirm your account, then sign in.");
     } catch (caught) {
       const text = caught instanceof Error ? caught.message : "Unable to connect to the authentication service.";
-      setError(text.includes("not configured") || text.includes("API key") ? "Authentication is temporarily unavailable. Please try again shortly." : text);
+      setError(friendlyAuthError(text));
     } finally {
       setLoading(false);
     }
