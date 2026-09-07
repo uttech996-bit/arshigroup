@@ -5,6 +5,20 @@ import { FormEvent, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 
+function friendlyAuthError(message: string) {
+  const normalized = message.toLowerCase();
+  if (
+    normalized.includes("api key") ||
+    normalized.includes("invalid api") ||
+    normalized.includes("supabase is not configured") ||
+    normalized.includes("failed to fetch") ||
+    normalized.includes("network")
+  ) {
+    return "Authentication is temporarily unavailable. Please try again shortly.";
+  }
+  return message;
+}
+
 export default function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
@@ -21,14 +35,14 @@ export default function LoginForm() {
     try {
       const { error: authError } = await createClient().auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
       if (authError) {
-        setError(authError.message);
+        setError(friendlyAuthError(authError.message));
         return;
       }
       router.replace(next?.startsWith("/") ? next : "/dashboard");
       router.refresh();
     } catch (caught) {
       const text = caught instanceof Error ? caught.message : "Unable to connect to the authentication service.";
-      setError(text.includes("not configured") || text.includes("API key") ? "Authentication is temporarily unavailable. Please try again shortly." : text);
+      setError(friendlyAuthError(text));
     } finally {
       setLoading(false);
     }
